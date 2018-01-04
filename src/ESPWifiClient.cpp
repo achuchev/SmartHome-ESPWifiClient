@@ -1,8 +1,7 @@
 #include "ESPWifiClient.h"
 #include <ESP8266WiFi.h>
-#include "RemotePrint.h"
-
-#include "Common.h"
+#include <RemotePrint.h>
+#include <CommonConfig.h>
 
 ESPWifiClient::ESPWifiClient(const char *ssid, const char *password) {
   this->ssid     = ssid;

@@ -2,7 +2,6 @@
 #define ESP_WIFI_CLIENT_H
 
 #include <Arduino.h>
-#include "Common.h"
 
 class ESPWifiClient {
 public:
