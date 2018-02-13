@@ -9,6 +9,7 @@ public:
   ESPWifiClient(const char *ssid,
                 const char *password);
   void init();
+  void handle();
 
 private:
 

@@ -30,3 +30,9 @@ void ESPWifiClient::init() {
   PRINT(           ". IP address: ");
   PRINTLN(WiFi.localIP().toString());
 }
+
+void ESPWifiClient::handle() {
+  if (WiFi.status() != WL_CONNECTED) {
+    init();
+  }
+}
