@@ -31,7 +31,7 @@ void ESPWifiClient::init() {
   PRINTLN(WiFi.localIP().toString());
 }
 
-void ESPWifiClient::handle() {
+void ESPWifiClient::reconnectIfNeeded() {
   if (WiFi.status() != WL_CONNECTED) {
     init();
   }
