@@ -1,10 +1,15 @@
 #include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
 #include <RemotePrint.h>
 #include "ESPWifiClient.h"
 
-ESPWifiClient::ESPWifiClient(const char *ssid, const char *password) {
-  this->ssid     = ssid;
-  this->password = password;
+ESPWifiClient::ESPWifiClient(const char *ap1ssid, const char *ap1password, const char *ap2ssid,
+                             const char *ap2password, unsigned long delayBetweenRetries) {
+  this->ap1ssid             = ap1ssid;
+  this->ap1password         = ap1password;
+  this->ap2ssid             = ap2ssid;
+  this->ap2password         = ap2password;
+  this->delayBetweenRetries = delayBetweenRetries;
 }
 
 void ESPWifiClient::init() {
@@ -12,27 +17,33 @@ void ESPWifiClient::init() {
 
   // We start by connecting to a WiFi network
   PRINTLN();
-  PRINT("WIFI: Connecting to SSID: ");
-  PRINTLN(ssid);
-  WiFi.begin(ssid, password);
+  PRINT("WIFI: Connecting to AP '");
+  PRINT(                      this->ap1ssid);
+  PRINT(                       "'");
 
-  while (WiFi.status() != WL_CONNECTED) {
-    // FIXME: Infinite loop in case of unsuccessful WIFI connection. Add reboot
-    // or some timeout
-    delay(500);
+  WiFi.mode(WIFI_STA);
+  wifiMulti.addAP(this->ap1ssid, this->ap1password);
 
-    PRINT(".");
+  if (ap2ssid != NULL) {
+    PRINT(" or AP '");
+    PRINT(      this->ap2ssid);
+    PRINT(       "'");
+    wifiMulti.addAP(this->ap2ssid, this->ap2password);
   }
+  PRINTLN(".");
 
-  PRINTLN();
-  PRINT("WIFI: Connected to SSID: ");
-  PRINT(                       ssid);
-  PRINT(           ". IP address: ");
-  PRINTLN(WiFi.localIP().toString());
+  if (wifiMulti.run() == WL_CONNECTED) {
+    PRINTLN();
+    PRINT("WIFI: Connected to WiFi. IP address: ");
+    PRINTLN(WiFi.localIP().toString());
+  }
 }
 
 void ESPWifiClient::reconnectIfNeeded() {
-  if (WiFi.status() != WL_CONNECTED) {
-    init();
+  if (wifiMulti.run() != WL_CONNECTED) {
+    PRINT("WiFi not connected! Waiting ");
+    PRINT(                          this->delayBetweenRetries);
+    PRINT(                "miliseconds.");
+    delay(this->delayBetweenRetries);
   }
 }
