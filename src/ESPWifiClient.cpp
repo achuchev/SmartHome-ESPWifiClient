@@ -41,9 +41,10 @@ void ESPWifiClient::init() {
 
 void ESPWifiClient::reconnectIfNeeded() {
   if (wifiMulti.run() != WL_CONNECTED) {
-    PRINT("WiFi not connected! Waiting ");
-    PRINT(                          this->delayBetweenRetries);
-    PRINT(                "miliseconds.");
+    PRINT_D("WiFi not connected! Waiting ");
+    PRINT_D(                          this->delayBetweenRetries);
+    PRINT_D(                "miliseconds.");
     delay(this->delayBetweenRetries);
+    PRINTLN_D();
   }
 }
